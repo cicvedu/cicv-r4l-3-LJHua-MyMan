@@ -15,7 +15,7 @@ make LLVM=1 -j$(nproc)
 
 编译成功后会在Linux文件夹下得到一个vmlinux文件，如下图所示：
 
-![](C:\Users\Administrator\Desktop\作业1.png)
+![](work/作业1.png)
 
 # 作业2：对Linux内核进行一些配置
 
@@ -45,45 +45,45 @@ default:
 1. 重新编译Linux内核，并禁用默认的C版本`e1000`网卡驱动
 2. 启动脚本，打开`qemu`并安装内核模块，在未安装e1000驱动前，使用`ifconfig`命令结果为空
 
-![](C:\Users\Administrator\Desktop\作业2-1.png)
+![](work/作业2-1.png)
 
 3. 安装`e1000`驱动模块，并执行`ip link set eth0 up`连接对应网卡
 
-![](C:\Users\Administrator\Desktop\作业2-2.png)
+![](work/作业2-2.png)
 
 4. 执行`ip addr add 10.0.2.15/255.255.255.0 brd + dev eth0 `为网卡配置`ip`地址和广播地址；为网卡添加一条新的路由`ip route add default via 10.0.2.1`，之后`ping 10.0.2.2`结果如下：
 
-![](C:\Users\Administrator\Desktop\作业2-3.png)
+![](work/作业2-3.png)
 
 5. 执行`ifconfig`验证
 
-![](C:\Users\Administrator\Desktop\作业2-4.png)
+![](work/作业2-4.png)
 
 # 作业 3：使用 rust 编写一个简单的内核模块并运行
 
 1. 进入Linux目录下的samples/rust文件夹，添加一个`rust_helloworld.rs`文件，并添加以下内容
 
-![](C:\Users\Administrator\Desktop\作业3-1.png)
+![](work/作业3-1.png)
 
 2. 在`linux/sample/rust/Kconfig`添加配置
 
-![](C:\Users\Administrator\Desktop\作业3-2.png)
+![](work/作业3-2.png)
 
 3. 在`linux/sample/rust/Makefile`添加配置
 
-![](C:\Users\Administrator\Desktop\作业3-3.png)
+![](work/作业3-3.png)
 
 4. 重新编译内核
 
-![](C:\Users\Administrator\Desktop\作业3-4.png)
+![](work/作业3-4.png)
 
 5. 将在`samples/rust`下看到一份`rust_helloworld.ko`的文件，将该文件复制到仓库中`src_e1000/rootfs`目录下，然后重新跑`build_image.sh`
 
-![](C:\Users\Administrator\Desktop\作业3-6.png)
+![](work/作业3-6.png)
 
 6. 进入内核，并执行`insmod rust_helloworld.ko`
 
-![](C:\Users\Administrator\Desktop\作业3-5.png)
+![](work/作业3-5.png)
 
 # 作业5：注册字符设备
 
@@ -93,7 +93,7 @@ default:
 
 1. 修改`Linux/samples/rust/rust_chrdev.rs`文件，具体如下：
 
-![](C:\Users\Administrator\Desktop\作业5-1.png)
+![](work/作业5-1.png)
 
 2. 重新编译内核，并如下更新配置
 
@@ -106,5 +106,5 @@ Kernel hacking
 
 3. 进入内核进行测试，测试结果如下：
 
-![](C:\Users\Administrator\Desktop\作业5-2.png)
+![](work/作业5-2.png)
 
