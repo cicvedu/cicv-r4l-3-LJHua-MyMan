@@ -39,15 +39,32 @@ impl file::Operations for RustFile {
         )
     }
 
-    fn write(_this: &Self,_file: &file::File,_reader: &mut impl kernel::io_buffer::IoBufferReader,_offset:u64,) -> Result<usize> {
-        Err(EPERM)
+    fn write(
+        this: &Self,
+        _file: &file::File,
+        reader: &mut impl kernel::io_buffer::IoBufferReader,
+        offset: u64,
+    ) -> Result<usize> {
+        let offset = offset.try_into()?;
+        let mut vec = this.inner.lock();
+        let len = core::cmp::min(reader.len(), vec.len().saturating_sub(offset));
+        reader.read_slice(&mut vec[offset..][..len])?;
+        Ok(len)
     }
 
-    fn read(_this: &Self,_file: &file::File,_writer: &mut impl kernel::io_buffer::IoBufferWriter,_offset:u64,) -> Result<usize> {
-        Err(EPERM)
+    fn read(
+        this: &Self,
+        _file: &file::File,
+        writer: &mut impl kernel::io_buffer::IoBufferWriter,
+        offset: u64,
+    ) -> Result<usize> {
+        let offset = offset.try_into()?;
+        let vec = this.inner.lock();
+        let len = core::cmp::min(writer.len(), vec.len().saturating_sub(offset));
+        writer.write_slice(&vec[offset..][..len])?;
+        Ok(len)
     }
 }
-
 struct RustChrdev {
     _dev: Pin<Box<chrdev::Registration<2>>>,
 }
