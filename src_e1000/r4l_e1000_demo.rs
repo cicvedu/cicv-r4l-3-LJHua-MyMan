@@ -188,9 +188,17 @@ impl net::DeviceOperations for NetDevice {
 
         Ok(())
     }
-
-    fn stop(_dev: &net::Device, _data: &NetDevicePrvData) -> Result {
+    fn stop(dev: &net::Device, data: &NetDevicePrvData) -> Result {
         pr_info!("Rust for linux e1000 driver demo (net device stop)\n");
+        dev.netif_carrier_off();
+        dev.netif_stop_queue();
+        unsafe {
+            Box::from_raw(
+                data._irq_handler
+                    .load(core::sync::atomic::Ordering::Relaxed),
+            );
+        }
+        drop(data);
         Ok(())
     }
 
@@ -293,6 +301,8 @@ impl kernel::irq::Handler for E1000InterruptHandler {
 /// the private data for the adapter
 struct E1000DrvPrvData {
     _netdev_reg: net::Registration<NetDevice>,
+    bars: i32,
+    pci_dev_ptr: Arc<*mut bindings::pci_dev>,
 }
 
 impl driver::DeviceRemoval for E1000DrvPrvData {
@@ -468,6 +478,10 @@ impl pci::Driver for E1000Drv {
 
     fn remove(data: &Self::Data) {
         pr_info!("Rust for linux e1000 driver demo (remove)\n");
+        unsafe {
+            let dev_ptr = data.pci_dev_ptr.as_ref();
+            bindings::pci_release_selected_regions(*dev_ptr, data.bars);
+        };
     }
 }
 struct E1000KernelMod {
