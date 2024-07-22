@@ -463,7 +463,3 @@ impl IoPort {
     define_write!(outl, u32);
 }
 
-/// get pci ptr
-pub fn get_pci_dev_ptr(&self) -> *mut bindings::pci_dev {
-    self.ptr
-}
